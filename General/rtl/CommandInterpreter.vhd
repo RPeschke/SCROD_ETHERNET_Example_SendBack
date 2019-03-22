@@ -46,8 +46,11 @@ entity CommandInterpreter is
       regReq      : out sl;
       regOp       : out sl;
       regAck      : in  sl
+		
    ); 
 end CommandInterpreter;
+
+
 
 -- Define architecture
 architecture rtl of CommandInterpreter is
@@ -126,6 +129,15 @@ architecture rtl of CommandInterpreter is
    constant WORD_ERR_C       : slv(31 downto 0) := x"7768613f";
 
    constant ERR_BIT_SIZE_C    : slv(31 downto 0) := x"00000001";
+	constant ERR_BIT_SIZE_C_1  : slv(31 downto 0) := x"10000001";
+	constant ERR_BIT_SIZE_C_2  : slv(31 downto 0) := x"20000001";
+	constant ERR_BIT_SIZE_C_3  : slv(31 downto 0) := x"30000001";
+	constant ERR_BIT_SIZE_C_4  : slv(31 downto 0) := x"40000001";
+	constant ERR_BIT_SIZE_C_5  : slv(31 downto 0) := x"50000001";
+	constant ERR_BIT_SIZE_C_6  : slv(31 downto 0) := x"60000001";
+	constant ERR_BIT_SIZE_C_7  : slv(31 downto 0) := x"70000001";
+	constant ERR_BIT_SIZE_C_8  : slv(31 downto 0) := x"80000001";
+	
    constant ERR_BIT_TYPE_C    : slv(31 downto 0) := x"00000002";
    constant ERR_BIT_DEST_C    : slv(31 downto 0) := x"00000004";
    constant ERR_BIT_COMM_TY_C : slv(31 downto 0) := x"00000008";
@@ -167,6 +179,8 @@ begin
 
    wordScrodRevC(31 downto 0) <= x"00A2" & myId;
 
+
+
    comb : process(r,usrRst,rxData,rxDataValid,rxDataLast,
                   txDataReady,regRdData,regAck,wordScrodRevC) is
       variable v : RegType;
@@ -182,6 +196,8 @@ begin
       -- State machine 
       case(r.state) is 
          when IDLE_S =>
+			
+				--numWord <=  max_slv(x"03f0",numWord);
             v.errFlags := (others => '0');
             v.checksum := (others => '0');
             if rxDataValid = '1' then
@@ -199,13 +215,17 @@ begin
                end if;
             end if;
          when PACKET_SIZE_S => 
+	
             if rxDataValid = '1' then
                rxDataReady <= '1';
                v.wordsLeft := rxData;
                -- Possible errors:
                -- This is last, go back to IDLE
-               if rxDataLast = '1' or rxData > 300 then
-                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C; 
+               if rxDataLast = '1' then 
+						v.errFlags := r.errFlags + ERR_BIT_SIZE_C_2; 
+                  v.state    := ERR_RESPONSE_S;
+					elsif	rxData > 300 then
+                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C_1; 
                   v.state    := ERR_RESPONSE_S;
                -- Otherwise, move on
                else
@@ -213,13 +233,14 @@ begin
                end if;
             end if;
          when PACKET_TYPE_S => 
+
             if rxDataValid = '1' then
                rxDataReady <= '1';
                v.wordsLeft := r.wordsLeft - 1;
                -- Possible errors:
                -- This is last, go back to IDLE
                if rxDataLast = '1' then
-                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C; 
+                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C_3; 
                   v.state := ERR_RESPONSE_S;
                -- Packet type isn't understood
                elsif rxData /= WORD_COMMAND_C then
@@ -231,13 +252,14 @@ begin
                end if;
             end if;
          when COMMAND_TARGET_S => 
+
             if rxDataValid = '1' then
                rxDataReady <= '1';
                v.wordsLeft := r.wordsLeft - 1;
                -- Possible errors:
                -- This is last, go back to IDLE
                if rxDataLast = '1' then
-                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C; 
+                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C_4; 
                   v.state    := ERR_RESPONSE_S;
                -- Target doesn't match this SCROD or broadcast
                elsif rxData /= wordScrodRevC and 
@@ -250,6 +272,7 @@ begin
                end if;
             end if;
          when COMMAND_ID_S => 
+				
             v.wordOutCnt  := (others => '0');
             v.timeoutCnt  := (others => '0');
             if rxDataValid = '1' then
@@ -262,7 +285,7 @@ begin
                -- Possible errors:
                -- This is last, go back to IDLE
                if rxDataLast = '1' then
-                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C; 
+                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C_5; 
                   v.state    := ERR_RESPONSE_S;
                -- Otherwise, move on
                else
@@ -270,6 +293,7 @@ begin
                end if;
             end if;
          when COMMAND_TYPE_S => 
+	
             if rxDataValid = '1' then
                rxDataReady <= '1';
                v.checksum  := r.checksum + rxData;
@@ -278,7 +302,7 @@ begin
                -- Possible errors:
                -- This is last, go back to IDLE
                if rxDataLast = '1' then
-                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C; 
+                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C_6; 
                   v.state    := ERR_RESPONSE_S;
                -- Move on for recognized commands
                elsif rxData = WORD_PING_C then
@@ -292,6 +316,7 @@ begin
                end if;
             end if;
          when COMMAND_DATA_S => 
+				
             if rxDataValid = '1' then
                rxDataReady <= '1';
                v.checksum  := r.checksum + rxData;
@@ -301,7 +326,7 @@ begin
                -- Possible errors:
                -- This is last, go back to IDLE
                if rxDataLast = '1' then
-                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C; 
+                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C_7; 
                   v.state    := ERR_RESPONSE_S;
                -- Move on for recognized commands
                else 
@@ -309,13 +334,14 @@ begin
                end if;
             end if;
          when COMMAND_CHECKSUM_S => 
+
             if rxDataValid = '1' then
                rxDataReady <= '1';
                v.wordsLeft := r.wordsLeft - 1;
                -- Possible errors:
                -- This is last, go back to IDLE
                if rxDataLast = '1' then
-                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C; 
+                  v.errFlags := r.errFlags + ERR_BIT_SIZE_C_8; 
                   v.state    := ERR_RESPONSE_S;
                -- Bad checksum
                elsif r.checksum /= rxData then
@@ -335,6 +361,7 @@ begin
                end if;
             end if;
          when PING_S =>
+				
             if r.noResponse = '1' then
                v.state := CHECK_MORE_S;
             else
@@ -342,6 +369,7 @@ begin
                v.state    := PING_RESPONSE_S;
             end if;            
          when READ_S => 
+			
             v.regOp      := '0';
             v.regReq     := '1';
             v.timeoutCnt := r.timeoutCnt + 1;
@@ -359,6 +387,7 @@ begin
                v.state    := ERR_RESPONSE_S;
             end if;
          when WRITE_S => 
+
             v.regOp      := '1';
             v.regReq     := '1';
             v.timeoutCnt := r.timeoutCnt + 1;
@@ -375,6 +404,7 @@ begin
                v.state    := ERR_RESPONSE_S;
             end if;
          when READ_RESPONSE_S => 
+
             if regAck = '0' and r.regReq = '0' then
                v.txDataValid := '1';
                case conv_integer(r.wordOutCnt) is
@@ -396,6 +426,7 @@ begin
                end if;
             end if;
          when WRITE_RESPONSE_S => 
+				
             if regAck = '0' and r.regReq = '0' then
                v.txDataValid := '1';
                case conv_integer(r.wordOutCnt) is
@@ -417,6 +448,7 @@ begin
                end if;
             end if;
          when PING_RESPONSE_S => 
+			
             v.txDataValid := '1';
             case conv_integer(r.wordOutCnt) is
                when 0 => v.txData := WORD_HEADER_C;
