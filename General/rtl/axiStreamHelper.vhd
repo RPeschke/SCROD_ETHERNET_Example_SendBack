@@ -9,7 +9,7 @@ package axiStreamHelper is
   subtype data_t is integer;
   subtype data_t1 is integer;
   subtype data_t2 is integer;
- -- subtype size_t is integer ;
+  subtype size_t is integer ;
 
   type AxiCtrl is record
     DataValid : sl;
