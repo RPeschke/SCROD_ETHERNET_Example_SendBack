@@ -21,12 +21,12 @@ entity Axi_CommandInterpreter is
     -- User clock and reset
     usrClk      : in  sl;
     -- Incoming data
-    rxData      : in   slv(31 downto 0);
+    rxData      : in  DWORD;
     rxDataValid : in  sl;
     rxDataLast  : in  sl;
     rxDataReady : out sl;
     -- Outgoing response
-    txData      : out  slv(31 downto 0);
+    txData      : out DWORD;
     txDataValid : out sl;
     txDataLast  : out sl;
     txDataReady : in  sl
@@ -48,7 +48,7 @@ begin
 	 variable Bufer1 : Word32Array(10 downto 0);  
     variable Index : integer :=0;
 	 variable Max_Index : integer :=0;
-	 variable b1 :  slv(31 downto 0) := (others => '0');
+	 variable b1 : DWORD := (others => '0');
   begin
     if (rising_edge(usrClk)) then
      

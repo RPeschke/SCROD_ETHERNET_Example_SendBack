@@ -7,8 +7,8 @@ library IEEE;
   use work.axiStreamHelper.all; 
 
   package axiDWORDbi_p is
-subtype  DWORD_data_t is slv(31 downto 0) ;
-constant DWORD_data_t_null : DWORD_data_t := (others => '0'); 
+subtype  DWORD_data_t is DWORD;
+constant DWORD_data_t_null : DWORD := (others => '0'); 
 procedure resetData(data : inout DWORD_data_t);
 
 
@@ -54,7 +54,7 @@ data => DWORD_data_t_null,
 Ready => AxiDataReady_t_null,
 Ready0 => AxiDataReady_t_null,
 Ready1 => AxiDataReady_t_null,
-position => 0);
+position => size_t_null);
 
  procedure resetSender(this : inout axiDWordBi_fromMaster);
  procedure pullSender(this : inout axiDWordBi_fromMaster; tx_ready : in AxiDataReady_t);
@@ -92,7 +92,7 @@ data => DWORD_data_t_null,
 Ready => AxiDataReady_t_null,
 Ready0 => AxiDataReady_t_null,
 Ready1 => AxiDataReady_t_null,
-position => 0);
+position => size_t_null);
 
  procedure resetSender(this : inout axiDWordBi_ToMaster);
  procedure pullSender(this : inout axiDWordBi_ToMaster; tx_ready : in AxiDataReady_t);
