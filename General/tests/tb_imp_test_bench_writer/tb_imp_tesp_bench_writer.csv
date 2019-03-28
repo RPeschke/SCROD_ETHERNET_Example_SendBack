@@ -1,0 +1,3 @@
+txData,txDataValid,txDataLast,txDataReady,valid,data_in_0,data_in_1,data_in_2,data_in_3,data_in_4,data_in_5,data_in_6,data_in_7,data_in_8,data_in_9,data_in_10
+slv(31 downto 0),sl,sl,sl,sl,slv(31 downto 0),slv(31 downto 0),slv(31 downto 0),slv(31 downto 0),slv(31 downto 0),slv(31 downto 0),slv(31 downto 0),slv(31 downto 0),slv(31 downto 0),slv(31 downto 0),slv(31 downto 0)
+out,out,out,in,in,in,in,in,in,in,in,in,in,in,in,in

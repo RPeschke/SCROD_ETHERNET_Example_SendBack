@@ -1,0 +1,3 @@
+rxData,rxDataValid,rxDataLast,txDataReady
+slv(31 downto 0),sl,sl,sl
+
