@@ -71,6 +71,9 @@ begin
       we <= '0';
 
       fifo_r_s2m.read_enable <='0';
+      if Index = 0 then 
+        i_data_out  <= (others => (others => '0'));
+      end if;
 
       
       if isReceivingData(axi_in) and packetCounter <= Max_word then 

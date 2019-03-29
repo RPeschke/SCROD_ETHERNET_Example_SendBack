@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<testcases>
+<testcase name="tb_daq_gen_readout_04">
+<descitption>
+discontinous stream leads to broken stream on local link side
+</descitption>
+<inputfile>tb_daq_gen_readout_04_in.csv</inputfile>
+<referencefile>tb_daq_gen_readout_04_reference_out.csv</referencefile>
+<entityname>tb_impl_test_read_write</entityname>
+<tc_type>Unclear</tc_type>
+<difftool>diff</difftool>
+<RegionOfInterest> 
+<Headers> txDataLast, txDataReady, , , , , , </Headers>
+<Lines> 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, </Lines>
+</RegionOfInterest> 
+</testcase>
+</testcases>
