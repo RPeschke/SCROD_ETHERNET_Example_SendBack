@@ -72,14 +72,14 @@ with open(fileName, newline='') as csvfile:
 
 
 str1=To_little_endien( [ numberOfRows ,numberOfRows ,numberOfRows ] )
-ArrayToHex(str1)
+#ArrayToHex(str1)
 clientSock.sendto(str1, (UDP_IP, UDP_PORT))
 
 
 with open(fileName, newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     fieldNames = reader.fieldnames
-    print(fieldNames)
+    #print(fieldNames)
     for row in reader:
         message = list()
         message.append(2)
@@ -88,17 +88,19 @@ with open(fileName, newline='') as csvfile:
         
         message1 = To_little_endien(message)
         
-        ArrayToHex(message1 )
+        #ArrayToHex(message1 )
         
         clientSock.sendto(message1 , (UDP_IP, UDP_PORT))
 
 
-with open(fileName+"out.csv","w",newline="") as f:
+print("receiving")
+
+with open(fileName.split(".")[0]+"_out.csv","w",newline="") as f:
     f.write(",".join(fieldNames)+"\n")
     for _ in range(numberOfRows ):
         data, addr = clientSock.recvfrom(4096)
 
-        print("\n\nrecv message...")
+
 #        ArrayToHex(data)
         
         data_list = list()
@@ -107,3 +109,4 @@ with open(fileName+"out.csv","w",newline="") as f:
         
         f.write(",".join(data_list)+"\n")
 
+print("done\n")
