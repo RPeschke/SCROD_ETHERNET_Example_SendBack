@@ -68,7 +68,7 @@ print("Sent message...")
 fileName = "data.csv"
 import csv
 with open(fileName, newline='') as csvfile:
-    numberOfRows = len(csvfile.readlines()) -1
+    numberOfRows = len(csvfile.readlines()) -2
 
 
 str1=To_little_endien( [ numberOfRows ,numberOfRows ,numberOfRows ] )
@@ -77,10 +77,16 @@ clientSock.sendto(str1, (UDP_IP, UDP_PORT))
 
 
 with open(fileName, newline='') as csvfile:
+    
     reader = csv.DictReader(csvfile)
     fieldNames = reader.fieldnames
     #print(fieldNames)
+    lineCount = 0
     for row in reader:
+        lineCount+=1
+        if lineCount < 2:
+            continue
+        
         message = list()
         message.append(2)
         for coll in fieldNames:
