@@ -6,7 +6,7 @@ library ieee;
   use IEEE.STD_LOGIC_1164.all;
   use ieee.numeric_std.all;
 
-  use work.UtilityPkg.all;
+  use work.CSV_UtilityPkg.all;
   use work.axiDWORDbi_p.all;
   use work.fifo_cc_pgk_32.all;
   use work.type_conversions_pgk.all;
@@ -24,7 +24,7 @@ entity Imp_test_bench_reader is
   rxDataValid : in  sl;
   rxDataLast  : in  sl;
   rxDataReady : out sl;
-  data_out    : out Word32Array(COLNum downto 0) := (others => (others => '0'));
+  data_out    : out Word32Array(COLNum - 1 downto 0) := (others => (others => '0'));
   valid : out sl
   );
 end entity;
@@ -47,7 +47,7 @@ architecture rtl of Imp_test_bench_reader is
   signal fifo_w_m2s : FIFO_nativ_write_32_m2s := FIFO_nativ_write_32_m2s_null;
   signal fifo_r_m2s : FIFO_nativ_reader_32_m2s := FIFO_nativ_reader_32_m2s_null;
   signal fifo_r_s2m : FIFO_nativ_reader_32_s2m := FIFO_nativ_reader_32_s2m_null;
-  signal i_data_out    :  Word32Array(COLNum downto 0) := (others => (others => '0'));
+  signal i_data_out    :  Word32Array((COLNum -1) downto 0) := (others => (others => '0'));
   signal we          : sl := '0';
   signal Max_word : integer := 10;
 
@@ -119,7 +119,7 @@ begin
   end process seq;
 
   
-  gen_DAC_CONTROL: for i in 1 to COLNum generate
+  gen_DAC_CONTROL: for i in 1 to (COLNum -1) generate
 
   fifo_i : entity work.fifo_cc generic map (
     DATA_WIDTH => 32,

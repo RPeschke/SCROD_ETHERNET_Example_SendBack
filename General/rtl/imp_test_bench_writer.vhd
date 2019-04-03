@@ -5,7 +5,7 @@ library ieee;
   use IEEE.STD_LOGIC_1164.all;
   use ieee.numeric_std.all;
 
-  use work.UtilityPkg.all;
+  use work.CSV_UtilityPkg.all;
   use work.axiDWORDbi_p.all;
   use work.fifo_cc_pgk_32.all;
   use work.type_conversions_pgk.all;
@@ -23,15 +23,15 @@ entity Imp_test_bench_writer is
     txDataValid : out sl;
     txDataLast  : out  sl;
     txDataReady : in sl;
-    data_in     : in Word32Array(COLNum downto 0) := (others => (others => '0'));
+    data_in     : in Word32Array(COLNum -1 downto 0) := (others => (others => '0'));
     Valid      : in sl
   );
 end entity;
 
 architecture Behavioral of Imp_test_bench_writer is 
-     signal  i_data_in     : Word32Array(COLNum downto 0) := (others => (others => '0'));
+     signal  i_data_in     : Word32Array(COLNum -1 downto 0) := (others => (others => '0'));
      signal in_buffer_readEnablde : sl := '0';
-     signal in_buffer_empty_v : slv (COLNum downto 0) := (others =>  '0');
+     signal in_buffer_empty_v : slv (COLNum -1 downto 0) := (others =>  '0');
      signal in_buffer_empty : sl  := '0';
      signal  i_fifo_out_m2s :  axi_stream_32_m2s := axi_stream_32_m2s_null;
      signal  i_fifo_out_s2m :  axi_stream_32_s2m := axi_stream_32_s2m_null;
@@ -53,7 +53,7 @@ architecture Behavioral of Imp_test_bench_writer is
   
   seq_out : process (Clk) is
     variable  fifo :  FIFO_nativ_stream_reader_32_slave := FIFO_nativ_stream_reader_32_slave_null;
-    variable index : integer := COLNum +1;
+    variable index : integer := COLNum;
     variable  dummy_data :  slv(31 downto 0) := (others => '0');
     variable out_fifo : axi_stream_32_master_stream := axi_stream_32_master_stream_null;
     
@@ -65,20 +65,20 @@ architecture Behavioral of Imp_test_bench_writer is
       in_buffer_readEnablde <= '0';
 
         
-        if ready_to_send(out_fifo)  and index <= COLNum then 
+        if ready_to_send(out_fifo)  and index <= (COLNum -1) then 
           send_data(out_fifo,i_data_in(index));
           
-          if index = COLNum then  
+          if index = (COLNum -1) then  
             Send_end_Of_Stream(out_fifo);
           end if;
           index := index + 1;
         end if;
         
-        if in_buffer_empty = '0' and index > COLNum then
+        if in_buffer_empty = '0' and index > (COLNum -1) then
           index :=0;
         end if ;
 
-        if in_buffer_empty = '0' and index = COLNum-1 then
+        if in_buffer_empty = '0' and index = COLNum-2 then
           in_buffer_readEnablde <= '1';
          
         end if ;
@@ -89,7 +89,7 @@ architecture Behavioral of Imp_test_bench_writer is
   end process;
 
   
-  gen_DAC_CONTROL: for i in 0 to COLNum generate
+  gen_DAC_CONTROL: for i in 0 to (COLNum -1) generate
 
     fifo_i : entity work.fifo_cc generic map (
       DATA_WIDTH => 32,
