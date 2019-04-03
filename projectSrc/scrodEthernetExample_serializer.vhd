@@ -29,8 +29,8 @@ use UNISIM.VComponents.all;
 
 entity scrodEthernetExample_serializer is
    generic (
-      REG_ADDR_BITS_G : integer := 16;
-      REG_DATA_BITS_G : integer := 16;
+
+
       NUM_IP_G        : integer := 2;
       GATE_DELAY_G    : time := 1 ns
    );
@@ -47,17 +47,14 @@ entity scrodEthernetExample_serializer is
 		fabClkN      :  in sl;
       -- SFP transceiver disable pin
       txDisable    : out sl
---      -- Status and diagnostics out
---      ethSync      : out  sl;
---      ethReady     : out  sl;
---      led          : out  slv(15 downto 0)
+
    );
 end scrodEthernetExample_serializer;
 
 architecture Behavioral of scrodEthernetExample_serializer is
 
-	signal ethSync      : sl;
-	signal ethReady     : sl;
+
+
 	signal led          : slv(15 downto 0);
 
    signal fabClk       : sl;
@@ -89,12 +86,7 @@ architecture Behavioral of scrodEthernetExample_serializer is
    signal userRxDataReadys   : slv(NUM_IP_G-1 downto 0);
 
    -- Register control interfaces
-   signal regAddr     : slv(REG_ADDR_BITS_G-1 downto 0);
-   signal regWrData   : slv(REG_DATA_BITS_G-1 downto 0);
-   signal regRdData   : slv(REG_DATA_BITS_G-1 downto 0);
-   signal regReq      : sl;
-   signal regOp       : sl;
-   signal regAck      : sl;
+
    
    -- Test registers
    -- Default is to send 1000 counter words once per second.
@@ -109,8 +101,7 @@ architecture Behavioral of scrodEthernetExample_serializer is
    
 begin
 
-   ethSync           <= ethRxLinkSync;
-   ethReady          <= ethAutoNegDone;
+
 
    U_IBUFGDS : IBUFGDS port map ( I => fabClkP, IB => fabClkN, O => fabClk);
 
@@ -161,8 +152,7 @@ begin
 
    U_TpGenTx : entity work.TpGenTx
       generic map (
---         NUM_WORDS_G   => 1000,
---         WAIT_CYCLES_G => 100,
+
          GATE_DELAY_G  => GATE_DELAY_G
       )
       port map (
