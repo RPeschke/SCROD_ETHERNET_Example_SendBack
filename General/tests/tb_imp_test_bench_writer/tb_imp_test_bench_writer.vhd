@@ -59,7 +59,10 @@ writer_data.txDataReady <= reader_data.txDataReady;
 writer_data.valid <= reader_data.valid;
 
 
-  dut : entity work.Imp_test_bench_writer port map ( 
+  dut : entity work.Imp_test_bench_writer 
+    generic map (
+      COLNum => 11
+    ) port map ( 
   clk => clk, 
   data_in(0) => writer_data.data_in_0,
 data_in(1) => writer_data.data_in_1,

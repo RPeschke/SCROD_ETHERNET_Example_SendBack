@@ -20,14 +20,14 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 --use IEEE.NUMERIC_STD.ALL;
-  use work.UtilityPkg.all;
+use work.UtilityPkg.all;
 use work.Eth1000BaseXPkg.all;
 use work.GigabitEthPkg.all;
 
 library UNISIM;
 use UNISIM.VComponents.all;
 
-entity scrodEthernetExample_serializer is
+entity top_eth_axi_commandreceiver is
    generic (
 
 
@@ -49,9 +49,9 @@ entity scrodEthernetExample_serializer is
       txDisable    : out sl
 
    );
-end scrodEthernetExample_serializer;
+end top_eth_axi_commandreceiver;
 
-architecture Behavioral of scrodEthernetExample_serializer is
+architecture Behavioral of top_eth_axi_commandreceiver is
 
 
 
@@ -96,7 +96,7 @@ architecture Behavioral of scrodEthernetExample_serializer is
    
    
    constant COLNum : integer := 10;
-   signal i_data :  Word32Array(COLNum -1 downto 0) := (others => (others => '0'));
+   signal i_data :  Word32Array(COLNum downto 0) := (others => (others => '0'));
    signal i_valid      : sl := '0';
    
 begin
@@ -183,34 +183,18 @@ begin
 
 
 
-
-  u_reader : entity work.Imp_test_bench_reader 
-    generic map (
-      COLNum => COLNum 
-    ) port map (
-    Clk       => ethClk125,
-    -- Incoming data
-    rxData      => userRxDataChannels(1),
-    rxDataValid => userRxDataValids(1),
-    rxDataLast  => userRxDataLasts(1),
-    rxDataReady => userRxDataReadys(1),
-    data_out    => i_data,
-    valid => i_valid
-  );
+u_eth_axi_command_receiver : entity work.eth_axi_command_receiver port map(
+  clk => ethClk125,
+  txData      => userTxDataChannels(1),
+  txDataValid => userTxDataValids(1),
+  txDataLast  => userTxDataLasts(1),
+  txDataReady => userTxDataReadys(1),
+  rxData      => userRxDataChannels(1),
+  rxDataValid => userRxDataValids(1),
+  rxDataLast  => userRxDataLasts(1),
+  rxDataReady => userRxDataReadys(1)
   
-  u_writer : entity work.Imp_test_bench_writer 
-    generic map (
-      COLNum => COLNum 
-    ) port map (
-      Clk      => ethClk125,
-      -- Incoming data
-      tXData      => userTxDataChannels(1),
-      txDataValid => userTxDataValids(1),
-      txDataLast  => userTxDataLasts(1),
-      txDataReady => userTxDataReadys(1),
-      data_in    => i_data,
-      Valid      => i_valid
-    );
+);
          
 end Behavioral;
 

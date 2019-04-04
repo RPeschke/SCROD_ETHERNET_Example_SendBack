@@ -5,7 +5,7 @@ library ieee;
   use IEEE.STD_LOGIC_1164.all;
   use ieee.numeric_std.all;
 
-  use work.CSV_UtilityPkg.all;
+  use work.UtilityPkg.all;
   use work.axiDWORDbi_p.all;
   use work.fifo_cc_pgk_32.all;
   use work.type_conversions_pgk.all;

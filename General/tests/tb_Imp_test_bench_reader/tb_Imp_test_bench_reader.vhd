@@ -49,7 +49,10 @@ writer_data.rxDataLast <= reader_data.rxDataLast;
 writer_data.rxDataValid <= reader_data.rxDataValid;
 
 
-  dut : entity work.Imp_test_bench_reader port map ( 
+  dut : entity work.Imp_test_bench_reader 
+    generic map (
+      COLNum => 11
+    ) port map ( 
     Clk => clk,
 valid => writer_data.clk_out,
 data_out(0) => writer_data.data_out_0,
