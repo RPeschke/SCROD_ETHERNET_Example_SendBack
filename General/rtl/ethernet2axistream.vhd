@@ -19,6 +19,8 @@ entity ethernet2axistream is
     -- Alternative clock input
     fabClkP      :  in sl;
     fabClkN      :  in sl;
+    
+    clockOut     :  out sl; 
     -- SFP transceiver disable pin
     txDisable    : out sl;
     -- axi stream output
@@ -78,7 +80,8 @@ begin
   
 
   U_IBUFGDS : IBUFGDS port map ( I => fabClkP, IB => fabClkN, O => fabClk);
-
+  
+  clockOut <= fabClk;
   --------------------------------
   -- Gigabit Ethernet Interface --
   --------------------------------
